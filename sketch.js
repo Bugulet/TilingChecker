@@ -1,12 +1,15 @@
+
+let canvas;
 function setup() {
     // create canvas
-    const c = createCanvas(windowWidth,windowHeight);
+    canvas = createCanvas(windowWidth,windowHeight);
     background(100);
     // Add an event for when a file is dropped onto the canvas
-    c.drop(gotFile);
+    canvas.drop(gotFile);
   }
   
   function draw() {
+      background(100);
     fill(255);
     noStroke();
     textSize(24);
@@ -26,3 +29,8 @@ function setup() {
       console.log('Not an image file!');
     }
   }
+
+  function windowResized() {
+    resizeCanvas(windowWidth, windowHeight);
+  }
+  
