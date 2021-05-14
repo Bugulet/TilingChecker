@@ -1,7 +1,7 @@
 
 let canvas;
 let imageSource = 0;
-let imageScale = 0.33333;
+let imageScale = 0.2;
 let imageWidth = 0;
 let imageHeight = 0;
 let offsetX;
@@ -9,51 +9,58 @@ let offsetY;
 
 let oldOffsetX, oldOffsetY;
 
-let imageCountX=3;
-let imageCountY=3;
+let imageCount = 3;
+
+let fullscreen=false;
 
 function setup() {
     canvas = createCanvas(windowWidth, windowHeight);
-    background(100);
     canvas.drop(gotFile);
-
-    // offsetX = width / 2;
-    // offsetY = height / 2;
-
     oldOffsetX = offsetX;
     oldOffsetY = offsetY;
 }
 
 function draw() {
     if (imageSource == 0) {
-        background(100);
+        background(30);
         fill(255);
         noStroke();
-        textSize(24);
+        textSize(40);
         textAlign(CENTER);
-        text('Drag an image file onto the canvas.', width / 2, height / 2);
+        text('Drag an image here', width / 2, height / 2);
     }
     else {
-        //push();
-
-        background(100);
-        imageCountX=3+1/imageScale;
-        imageCountY=3+1/imageScale;
-        //
-        //translate(-imageWidth * imageScale/2,-imageHeight * imageScale/2);
-
-        for (let i = 0; i < imageCountX; i++) {
-            for (let j = 0; j < imageCountY; j++) {
-                let imageX =imageWidth * imageScale * i;
-                let imageY =imageHeight * imageScale * j;
-
-                // imageX-=(imageWidth * imageScale*imageCountX)/2;
-                // imageY-=(imageHeight * imageScale*imageCountY)/2;
-                image(imageSource, imageX, imageY, imageWidth * imageScale, imageWidth * imageSource.height / imageSource.width * imageScale);
+        background(30);
+        textAlign(LEFT);
+        
+        if (fullscreen) {
+            imageMode(CORNER);
+            imageCount = 3 + 1 / imageScale;
+            for (let i = 0; i < imageCount; i++) {
+                for (let j = 0; j < imageCount; j++) {
+                    let imageX = imageWidth * imageScale * i;
+                    let imageY = imageHeight * imageScale * j;
+                    image(imageSource, imageX, imageY, imageWidth * imageScale, imageWidth * imageSource.height / imageSource.width * imageScale);
+                }
             }
         }
-
-        //pop();
+        else{
+            imageMode(CENTER);
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    
+                    let imageX=width/2-imageWidth*imageScale+imageWidth*imageScale*i;
+                    let imageY=height/2-imageHeight*imageScale+imageHeight*imageScale*j;
+                    image(imageSource, imageX, imageY, imageWidth * imageScale, imageWidth * imageSource.height / imageSource.width * imageScale);
+                }         
+            }
+        }
+        textSize(24);
+        fill(30,180);
+        rect(0,height-60,320,400);
+        fill(255);
+        text('Scroll to zoom', 0, height-29);
+        text('Space bar to fill entire screen',0,height-5);
 
     }
 
@@ -61,7 +68,7 @@ function draw() {
 
 function gotFile(file) {
     if (file.type === 'image') {
-        imageSource = createImg(file.data,()=>{
+        imageSource = createImg(file.data, () => {
             //doing a callback if the image is a bit on the large size just to be sure
             imageWidth = width / imageSource.width * imageSource.width;
             imageHeight = imageWidth * imageSource.height / imageSource.width;
@@ -78,17 +85,11 @@ function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
     offsetX = width / 2;
     offsetY = height / 2;
-    imageWidth = width / imageSource.width * imageSource.width ;
+    imageWidth = width / imageSource.width * imageSource.width;
     imageHeight = imageWidth * imageSource.height / imageSource.width;
 }
 
-function mousePressed(event) {
-    console.log(event);
-}
-
 function mouseWheel(event) {
-
-
     if (event.delta > 0) {
         imageScale *= 0.95;
     }
@@ -101,3 +102,9 @@ function mouseWheel(event) {
     }
     console.log(imageScale);
 }
+
+function keyPressed() {
+    if (keyCode === 32) {
+      fullscreen=!fullscreen;
+    }
+  }
