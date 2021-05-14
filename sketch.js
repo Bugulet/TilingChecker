@@ -33,13 +33,18 @@ function draw() {
         background(30);
         textAlign(LEFT);
         
+        if(mouseIsPressed){
+            offsetX+=mouseX-pmouseX;
+            offsetY+=mouseY-pmouseY;
+        }
+
         if (fullscreen) {
             imageMode(CORNER);
             imageCount = 3 + 1 / imageScale;
             for (let i = 0; i < imageCount; i++) {
                 for (let j = 0; j < imageCount; j++) {
-                    let imageX = imageWidth * imageScale * i;
-                    let imageY = imageHeight * imageScale * j;
+                    let imageX = imageWidth * imageScale * i+offsetX;
+                    let imageY = imageHeight * imageScale * j+offsetY;
                     image(imageSource, imageX, imageY, imageWidth * imageScale, imageWidth * imageSource.height / imageSource.width * imageScale);
                 }
             }
@@ -49,17 +54,18 @@ function draw() {
             for (let i = 0; i < 3; i++) {
                 for (let j = 0; j < 3; j++) {
                     
-                    let imageX=width/2-imageWidth*imageScale+imageWidth*imageScale*i;
-                    let imageY=height/2-imageHeight*imageScale+imageHeight*imageScale*j;
+                    let imageX=width/2-imageWidth*imageScale+imageWidth*imageScale*i+offsetX;
+                    let imageY=height/2-imageHeight*imageScale+imageHeight*imageScale*j+offsetY;
                     image(imageSource, imageX, imageY, imageWidth * imageScale, imageWidth * imageSource.height / imageSource.width * imageScale);
                 }         
             }
         }
         textSize(24);
         fill(30,180);
-        rect(0,height-60,320,400);
+        rect(0,height-84,320,400);
         fill(255);
-        text('Scroll to zoom', 0, height-29);
+        text('Click to pan',0,height-61);
+        text('Scroll to zoom', 0, height-33);
         text('Space bar to fill entire screen',0,height-5);
 
     }
@@ -83,8 +89,8 @@ function gotFile(file) {
 
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
-    offsetX = width / 2;
-    offsetY = height / 2;
+    offsetX = 0;
+    offsetY = 0;
     imageWidth = width / imageSource.width * imageSource.width;
     imageHeight = imageWidth * imageSource.height / imageSource.width;
 }
@@ -107,4 +113,7 @@ function keyPressed() {
     if (keyCode === 32) {
       fullscreen=!fullscreen;
     }
+    offsetX=0;
+    offsetY=0;
+    imageScale=0.2;
   }
