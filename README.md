@@ -1,2 +1,3 @@
 # Tiling Checker
-Tool for checking if a sprite is properly tileable
+P5js tool for checking if a sprite is properly tileable.
+
