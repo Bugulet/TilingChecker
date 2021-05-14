@@ -1,7 +1,7 @@
 
 let canvas;
 let imageSource = 0;
-let imageScale = 1.0;
+let imageScale = 0.33333;
 let imageWidth = 0;
 let imageHeight = 0;
 let offsetX;
@@ -9,14 +9,16 @@ let offsetY;
 
 let oldOffsetX, oldOffsetY;
 
+let imageCountX=3;
+let imageCountY=3;
 
 function setup() {
     canvas = createCanvas(windowWidth, windowHeight);
     background(100);
     canvas.drop(gotFile);
 
-    offsetX = width / 2;
-    offsetY = height / 2;
+    // offsetX = width / 2;
+    // offsetY = height / 2;
 
     oldOffsetX = offsetX;
     oldOffsetY = offsetY;
@@ -32,16 +34,26 @@ function draw() {
         text('Drag an image file onto the canvas.', width / 2, height / 2);
     }
     else {
-        background(100);
-        imageMode(CENTER);
+        //push();
 
-        for (let i = 0; i < 3; i++) {
-            for (let j = 0; j < 3; j++) {
-                let imageX = offsetX - imageWidth * imageScale + imageWidth * imageScale * i;
-                let imageY = offsetY - imageHeight * imageScale + imageHeight * imageScale * j;
+        background(100);
+        imageCountX=3+1/imageScale;
+        imageCountY=3+1/imageScale;
+        //
+        //translate(-imageWidth * imageScale/2,-imageHeight * imageScale/2);
+
+        for (let i = 0; i < imageCountX; i++) {
+            for (let j = 0; j < imageCountY; j++) {
+                let imageX =imageWidth * imageScale * i;
+                let imageY =imageHeight * imageScale * j;
+
+                // imageX-=(imageWidth * imageScale*imageCountX)/2;
+                // imageY-=(imageHeight * imageScale*imageCountY)/2;
                 image(imageSource, imageX, imageY, imageWidth * imageScale, imageWidth * imageSource.height / imageSource.width * imageScale);
             }
         }
+
+        //pop();
 
     }
 
@@ -50,8 +62,8 @@ function draw() {
 function gotFile(file) {
     if (file.type === 'image') {
         imageSource = createImg(file.data,()=>{
-            //doing a callback if the image is a bit on the large size just to be jure
-            imageWidth = width / imageSource.width * imageSource.width / 3;
+            //doing a callback if the image is a bit on the large size just to be sure
+            imageWidth = width / imageSource.width * imageSource.width;
             imageHeight = imageWidth * imageSource.height / imageSource.width;
         }).hide();
         console.log("got image");
@@ -66,7 +78,7 @@ function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
     offsetX = width / 2;
     offsetY = height / 2;
-    imageWidth = width / imageSource.width * imageSource.width / 3;
+    imageWidth = width / imageSource.width * imageSource.width ;
     imageHeight = imageWidth * imageSource.height / imageSource.width;
 }
 
@@ -78,10 +90,10 @@ function mouseWheel(event) {
 
 
     if (event.delta > 0) {
-        imageScale -= 0.1;
+        imageScale *= 0.95;
     }
     else {
-        imageScale += 0.1;
+        imageScale *= 1.05;
     }
 
     if (imageScale <= 0.1) {
